@@ -21,7 +21,7 @@ class TimerWidget extends StatelessWidget {
     } else if (percentage <= 0.5) {
       return warningColor ?? Colors.orange;
     }
-    return textColor;
+    return Colors.red;
   }
 
   String _formatTime(int seconds) {
