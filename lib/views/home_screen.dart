@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 import '../services/quiz_service.dart';
 import '../viewmodels/quiz_viewmodel.dart';
 import '../viewmodels/user_viewmodel.dart';
+import '../widgets/luxury_background.dart';
 import 'quiz_screen.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -63,8 +64,9 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Colors.white,
+    return LuxuryBackgroundScaffold(
+      addBackgroundOverlay: true,
+      overlayOpacity: 0.1,
       body: SafeArea(
         child: SingleChildScrollView(
           padding: const EdgeInsets.all(24),
@@ -81,7 +83,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     style: TextStyle(
                       fontSize: 32,
                       fontWeight: FontWeight.bold,
-                      color: Color(0xFF6C63FF),
+                      color: Color(0xFFD4A574),
                     ),
                   ),
                   const SizedBox(height: 8),
@@ -89,7 +91,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     'Test pengetahuan Anda dengan kuis interaktif',
                     style: TextStyle(
                       fontSize: 16,
-                      color: Colors.grey[600],
+                      color: Colors.grey[300],
                     ),
                   ),
                 ],
@@ -103,10 +105,10 @@ class _HomeScreenState extends State<HomeScreen> {
                     return Container(
                       padding: const EdgeInsets.all(16),
                       decoration: BoxDecoration(
-                        color: const Color(0xFFF3F1FF),
+                        color: const Color(0xFFD4A574).withOpacity(0.15),
                         borderRadius: BorderRadius.circular(12),
                         border: Border.all(
-                          color: const Color(0xFF6C63FF),
+                          color: const Color(0xFFD4A574),
                           width: 2,
                         ),
                       ),
@@ -118,7 +120,7 @@ class _HomeScreenState extends State<HomeScreen> {
                             style: const TextStyle(
                               fontSize: 16,
                               fontWeight: FontWeight.bold,
-                              color: Color(0xFF6C63FF),
+                              color: Color(0xFFD4A574),
                             ),
                           ),
                           const SizedBox(height: 8),
@@ -126,7 +128,7 @@ class _HomeScreenState extends State<HomeScreen> {
                             'Kuis diselesaikan: ${userViewModel.getTotalQuizzesCompleted()}',
                             style: TextStyle(
                               fontSize: 14,
-                              color: Colors.grey[700],
+                              color: Colors.grey[300],
                             ),
                           ),
                           if (userViewModel.getTotalQuizzesCompleted() > 0)
@@ -134,7 +136,7 @@ class _HomeScreenState extends State<HomeScreen> {
                               'Rata-rata skor: ${userViewModel.getAverageScore().toStringAsFixed(1)}%',
                               style: TextStyle(
                                 fontSize: 14,
-                                color: Colors.grey[700],
+                                color: Colors.grey[300],
                               ),
                             ),
                         ],
@@ -152,7 +154,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 style: TextStyle(
                   fontSize: 18,
                   fontWeight: FontWeight.bold,
-                  color: Colors.black,
+                  color: Colors.white,
                 ),
               ),
               const SizedBox(height: 16),
@@ -175,19 +177,21 @@ class _HomeScreenState extends State<HomeScreen> {
                       decoration: BoxDecoration(
                         color: isSelected
                             ? const Color(0xFF6C63FF)
-                            : Colors.grey[100],
+                            : Colors.white.withOpacity(0.1),
                         borderRadius: BorderRadius.circular(20),
                         border: Border.all(
                           color: isSelected
                               ? const Color(0xFF6C63FF)
-                              : Colors.grey[300]!,
+                              : const Color(0xFFD4A574).withOpacity(0.3),
                           width: 2,
                         ),
                       ),
                       child: Text(
                         category,
                         style: TextStyle(
-                          color: isSelected ? Colors.white : Colors.black,
+                          color: isSelected
+                              ? Colors.white
+                              : Colors.grey[200],
                           fontWeight: FontWeight.w500,
                           fontSize: 14,
                         ),
@@ -206,7 +210,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   onPressed: _isLoading ? null : _startQuiz,
                   style: ElevatedButton.styleFrom(
                     backgroundColor: const Color(0xFF6C63FF),
-                    disabledBackgroundColor: Colors.grey[400],
+                    disabledBackgroundColor: Colors.grey[600],
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(12),
                     ),

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../viewmodels/quiz_viewmodel.dart';
+import '../widgets/luxury_background.dart';
 import '../widgets/option_card.dart';
 import '../widgets/progress_bar.dart';
 import '../widgets/timer_widget.dart';
@@ -25,8 +26,9 @@ class _QuizScreenState extends State<QuizScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Colors.white,
+    return LuxuryBackgroundScaffold(
+      addBackgroundOverlay: true,
+      overlayOpacity: 0.1,
       appBar: AppBar(
         backgroundColor: const Color(0xFF6C63FF),
         elevation: 0,
@@ -88,7 +90,7 @@ class _QuizScreenState extends State<QuizScreen> {
                       TimerWidget(
                         remainingSeconds: quizViewModel.remainingSeconds,
                         totalSeconds: quizViewModel.remainingSeconds + 60, // Contoh total
-                        textColor: Colors.black,
+                        textColor: Colors.white,
                       ),
                       // Question counter
                       Container(
@@ -137,7 +139,7 @@ class _QuizScreenState extends State<QuizScreen> {
                             style: const TextStyle(
                               fontSize: 18,
                               fontWeight: FontWeight.bold,
-                              color: Colors.black,
+                              color: Colors.white,
                               height: 1.5,
                             ),
                           ),

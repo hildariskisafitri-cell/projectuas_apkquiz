@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 import '../models/quiz_score.dart';
 import '../viewmodels/quiz_viewmodel.dart';
 import '../viewmodels/user_viewmodel.dart';
+import '../widgets/luxury_background.dart';
 import '../widgets/quiz_button.dart';
 import 'home_screen.dart';
 
@@ -76,8 +77,9 @@ class _ResultScreenState extends State<ResultScreen> {
   Widget build(BuildContext context) {
     return PopScope(
       canPop: false,
-      child: Scaffold(
-        backgroundColor: Colors.white,
+      child: LuxuryBackgroundScaffold(
+        addBackgroundOverlay: true,
+        overlayOpacity: 0.1,
         body: SafeArea(
           child: SingleChildScrollView(
             child: Padding(
@@ -93,7 +95,7 @@ class _ResultScreenState extends State<ResultScreen> {
                     height: 180,
                     decoration: BoxDecoration(
                       shape: BoxShape.circle,
-                      color: _getColorWithAlpha(_getScoreColor(widget.score.percentage), 0.1),
+                      color: _getColorWithAlpha(_getScoreColor(widget.score.percentage), 0.15),
                       border: Border.all(
                         color: _getScoreColor(widget.score.percentage),
                         width: 4,
@@ -133,10 +135,10 @@ class _ResultScreenState extends State<ResultScreen> {
                   Container(
                     padding: const EdgeInsets.all(20),
                     decoration: BoxDecoration(
-                      color: Colors.grey[50],
+                      color: Colors.white.withOpacity(0.1),
                       borderRadius: BorderRadius.circular(16),
                       border: Border.all(
-                        color: Colors.grey[200]!,
+                        color: const Color(0xFFD4A574).withOpacity(0.2),
                         width: 1,
                       ),
                     ),
@@ -184,14 +186,14 @@ class _ResultScreenState extends State<ResultScreen> {
                               style: TextStyle(
                                 fontSize: 16,
                                 fontWeight: FontWeight.bold,
-                                color: Colors.black,
+                                color: Colors.white,
                               ),
                             ),
                             const SizedBox(height: 12),
                             Container(
                               padding: const EdgeInsets.all(16),
                               decoration: BoxDecoration(
-                                color: const Color(0xFFF3F1FF),
+                                color: const Color(0xFFD4A574).withOpacity(0.15),
                                 borderRadius: BorderRadius.circular(12),
                               ),
                               child: Column(
@@ -292,16 +294,16 @@ class _ResultScreenState extends State<ResultScreen> {
       children: [
         Text(
           label,
-          style: const TextStyle(
+          style: TextStyle(
             fontSize: 14,
-            color: Colors.grey,
+            color: Colors.grey[300],
             fontWeight: FontWeight.w500,
           ),
         ),
         Container(
           padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
           decoration: BoxDecoration(
-            color: color.withValues(alpha: 0.1),
+            color: color.withValues(alpha: 0.15),
             borderRadius: BorderRadius.circular(8),
           ),
           child: Text(
@@ -323,9 +325,9 @@ class _ResultScreenState extends State<ResultScreen> {
       children: [
         Text(
           label,
-          style: const TextStyle(
+          style: TextStyle(
             fontSize: 14,
-            color: Colors.grey,
+            color: Colors.grey[300],
             fontWeight: FontWeight.w500,
           ),
         ),
@@ -334,7 +336,7 @@ class _ResultScreenState extends State<ResultScreen> {
           style: const TextStyle(
             fontSize: 14,
             fontWeight: FontWeight.bold,
-            color: Color(0xFF6C63FF),
+            color: Color(0xFFD4A574),
           ),
         ),
       ],

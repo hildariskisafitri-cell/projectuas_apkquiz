@@ -1,0 +1,114 @@
+<svg viewBox="0 0 1920 1080" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice">
+  <defs>
+    <!-- Gradient untuk latar belakang utama -->
+    <linearGradient id="bgGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#1a2f4f;stop-opacity:1" />
+      <stop offset="50%" style="stop-color:#0d1f2d;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#0a1419;stop-opacity:1" />
+    </linearGradient>
+    
+    <!-- Pola Damask -->
+    <pattern id="damaskPattern" x="0" y="0" width="200" height="200" patternUnits="userSpaceOnUse">
+      <g opacity="0.08" fill="#d4a574">
+        <!-- Motif Damask sederhana namun elegan -->
+        <path d="M 100 20 Q 120 40 100 60 Q 80 40 100 20 M 100 20 Q 100 40 120 50 Q 100 60 80 50 Q 100 40 100 20" stroke="#d4a574" stroke-width="0.5" fill="none"/>
+        <path d="M 100 80 Q 85 95 100 110 Q 115 95 100 80" fill="#d4a574"/>
+        <path d="M 50 100 Q 65 115 80 100 Q 65 85 50 100" fill="#d4a574"/>
+        <path d="M 150 100 Q 135 115 120 100 Q 135 85 150 100" fill="#d4a574"/>
+      </g>
+    </pattern>
+    
+    <!-- Pola garis Art Deco -->
+    <pattern id="decoBorder" x="0" y="0" width="100" height="100" patternUnits="userSpaceOnUse">
+      <line x1="0" y1="50" x2="100" y2="50" stroke="#b8860b" stroke-width="0.5" opacity="0.15"/>
+      <path d="M 10 40 L 20 50 L 10 60 M 40 40 L 50 50 L 40 60 M 70 40 L 80 50 L 70 60" stroke="#d4a574" stroke-width="0.3" fill="none" opacity="0.12"/>
+    </pattern>
+
+    <!-- Filter untuk tekstur velvet -->
+    <filter id="velvetTexture">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="4" result="noise" seed="1"/>
+      <feDisplacementMap in="SourceGraphic" in2="noise" scale="3" xChannelSelector="R" yChannelSelector="G" />
+      <feGaussianBlur in="SourceGraphic" stdDeviation="1" />
+    </filter>
+
+    <!-- Ornamen sudut Victorian -->
+    <symbol id="cornerOrnament" viewBox="0 0 100 100">
+      <g fill="none" stroke="#d4a574" stroke-width="1.5" opacity="0.25">
+        <path d="M 10 90 Q 30 70 50 60 Q 70 50 90 40"/>
+        <path d="M 10 90 Q 30 75 50 65 Q 70 55 90 45"/>
+        <path d="M 10 85 Q 30 70 50 60 Q 70 50 90 35"/>
+        <circle cx="50" cy="50" r="3" fill="#d4a574" opacity="0.3"/>
+        <circle cx="30" cy="70" r="2" fill="#d4a574" opacity="0.25"/>
+        <circle cx="70" cy="55" r="2" fill="#d4a574" opacity="0.25"/>
+      </g>
+    </symbol>
+
+    <!-- Ornamen tengah -->
+    <symbol id="centerOrnament" viewBox="0 0 200 200">
+      <g fill="none" stroke="#d4a574" stroke-width="1" opacity="0.2">
+        <circle cx="100" cy="100" r="80"/>
+        <circle cx="100" cy="100" r="60"/>
+        <circle cx="100" cy="100" r="40"/>
+        <path d="M 100 30 L 110 70 L 150 80 L 110 100 L 110 140 L 100 100 L 60 110 L 90 80 Z" fill="none" opacity="0.15"/>
+        <line x1="20" y1="100" x2="180" y2="100" stroke="#d4a574" stroke-width="0.5"/>
+        <line x1="100" y1="20" x2="100" y2="180" stroke="#d4a574" stroke-width="0.5"/>
+      </g>
+    </symbol>
+  </defs>
+
+  <!-- Latar belakang utama dengan gradien -->
+  <rect width="1920" height="1080" fill="url(#bgGradient)" filter="url(#velvetTexture)"/>
+
+  <!-- Pola Damask background -->
+  <rect width="1920" height="1080" fill="url(#damaskPattern)"/>
+
+  <!-- Pola garis Art Deco -->
+  <rect width="1920" height="1080" fill="url(#decoBorder)"/>
+
+  <!-- Ornamen sudut kiri atas -->
+  <use href="#cornerOrnament" x="0" y="0" width="200" height="200"/>
+
+  <!-- Ornamen sudut kanan atas (flipped) -->
+  <g transform="translate(1920, 0) scale(-1, 1)">
+    <use href="#cornerOrnament" x="0" y="0" width="200" height="200"/>
+  </g>
+
+  <!-- Ornamen sudut kiri bawah (flipped) -->
+  <g transform="translate(0, 1080) scale(1, -1)">
+    <use href="#cornerOrnament" x="0" y="0" width="200" height="200"/>
+  </g>
+
+  <!-- Ornamen sudut kanan bawah (flipped) -->
+  <g transform="translate(1920, 1080) scale(-1, -1)">
+    <use href="#cornerOrnament" x="0" y="0" width="200" height="200"/>
+  </g>
+
+  <!-- Ornamen pusat atas -->
+  <use href="#centerOrnament" x="860" y="-50" width="200" height="200"/>
+
+  <!-- Ornamen pusat bawah -->
+  <use href="#centerOrnament" x="860" y="930" width="200" height="200"/>
+
+  <!-- Garis border tipis emas di tepi -->
+  <rect x="20" y="20" width="1880" height="1040" fill="none" stroke="#d4a574" stroke-width="2" opacity="0.2"/>
+  <rect x="30" y="30" width="1860" height="1020" fill="none" stroke="#b8860b" stroke-width="1" opacity="0.15"/>
+
+  <!-- Aksen garis vertikal Art Deco -->
+  <line x1="960" y1="0" x2="960" y2="1080" stroke="#d4a574" stroke-width="1" opacity="0.08"/>
+  
+  <!-- Aksen garis horizontal Art Deco -->
+  <line x1="0" y1="540" x2="1920" y2="540" stroke="#d4a574" stroke-width="1" opacity="0.08"/>
+
+  <!-- Detail mikro - bintik-bintik kecil untuk tekstur -->
+  <g opacity="0.06" fill="#d4a574">
+    <circle cx="200" cy="150" r="1.5"/>
+    <circle cx="500" cy="400" r="1"/>
+    <circle cx="800" cy="250" r="1.5"/>
+    <circle cx="1200" cy="600" r="1"/>
+    <circle cx="1600" cy="300" r="1.5"/>
+    <circle cx="300" cy="800" r="1"/>
+    <circle cx="1400" cy="900" r="1"/>
+    <circle cx="650" cy="950" r="1.5"/>
+    <circle cx="1100" cy="150" r="1"/>
+  </g>
+</svg>

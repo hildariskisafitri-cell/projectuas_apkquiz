@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../viewmodels/user_viewmodel.dart';
+import '../widgets/luxury_background.dart';
 import 'home_screen.dart';
 
 class LoginScreen extends StatefulWidget {
@@ -65,8 +66,9 @@ class _LoginScreenState extends State<LoginScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Colors.white,
+    return LuxuryBackgroundScaffold(
+      addBackgroundOverlay: true,
+      overlayOpacity: 0.1,
       body: SafeArea(
         child: SingleChildScrollView(
           padding: const EdgeInsets.all(24),
@@ -79,7 +81,7 @@ class _LoginScreenState extends State<LoginScreen> {
                 style: TextStyle(
                   fontSize: 32,
                   fontWeight: FontWeight.bold,
-                  color: Color(0xFF6C63FF),
+                  color: Color(0xFFD4A574),
                 ),
               ),
               const SizedBox(height: 8),
@@ -87,7 +89,7 @@ class _LoginScreenState extends State<LoginScreen> {
                 'Selamat datang kembali!',
                 style: TextStyle(
                   fontSize: 16,
-                  color: Colors.grey[600],
+                  color: Colors.grey[300],
                 ),
               ),
               const SizedBox(height: 60),
@@ -96,7 +98,7 @@ class _LoginScreenState extends State<LoginScreen> {
                 style: TextStyle(
                   fontSize: 14,
                   fontWeight: FontWeight.bold,
-                  color: Colors.black,
+                  color: Colors.white,
                 ),
               ),
               const SizedBox(height: 8),
@@ -104,17 +106,21 @@ class _LoginScreenState extends State<LoginScreen> {
                 controller: _nameController,
                 decoration: InputDecoration(
                   hintText: 'Masukkan nama Anda',
+                  hintStyle: TextStyle(color: Colors.grey[400]),
                   filled: true,
-                  fillColor: Colors.grey[100],
+                  fillColor: Colors.white.withOpacity(0.1),
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(12),
-                    borderSide: BorderSide.none,
+                    borderSide: BorderSide(
+                      color: const Color(0xFFD4A574).withOpacity(0.3),
+                    ),
                   ),
                   contentPadding: const EdgeInsets.symmetric(
                     horizontal: 16,
                     vertical: 12,
                   ),
                 ),
+                style: const TextStyle(color: Colors.white),
               ),
               const SizedBox(height: 20),
               const Text(
@@ -122,7 +128,7 @@ class _LoginScreenState extends State<LoginScreen> {
                 style: TextStyle(
                   fontSize: 14,
                   fontWeight: FontWeight.bold,
-                  color: Colors.black,
+                  color: Colors.white,
                 ),
               ),
               const SizedBox(height: 8),
@@ -130,11 +136,14 @@ class _LoginScreenState extends State<LoginScreen> {
                 controller: _emailController,
                 decoration: InputDecoration(
                   hintText: 'Masukkan email Anda',
+                  hintStyle: TextStyle(color: Colors.grey[400]),
                   filled: true,
-                  fillColor: Colors.grey[100],
+                  fillColor: Colors.white.withOpacity(0.1),
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(12),
-                    borderSide: BorderSide.none,
+                    borderSide: BorderSide(
+                      color: const Color(0xFFD4A574).withOpacity(0.3),
+                    ),
                   ),
                   contentPadding: const EdgeInsets.symmetric(
                     horizontal: 16,
@@ -142,6 +151,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   ),
                 ),
                 keyboardType: TextInputType.emailAddress,
+                style: const TextStyle(color: Colors.white),
               ),
               const SizedBox(height: 40),
               SizedBox(
@@ -151,7 +161,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   onPressed: _isLoading ? null : _login,
                   style: ElevatedButton.styleFrom(
                     backgroundColor: const Color(0xFF6C63FF),
-                    disabledBackgroundColor: Colors.grey[400],
+                    disabledBackgroundColor: Colors.grey[600],
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(12),
                     ),
@@ -192,7 +202,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     'Lanjutkan tanpa login',
                     style: TextStyle(
                       fontSize: 14,
-                      color: Colors.grey[600],
+                      color: Colors.grey[300],
                       decoration: TextDecoration.underline,
                     ),
                   ),

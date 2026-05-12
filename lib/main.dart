@@ -21,9 +21,20 @@ class MyApp extends StatelessWidget {
       child: MaterialApp(
         title: 'Quiz Master',
         theme: ThemeData(
-          colorScheme: ColorScheme.fromSeed(seedColor: const Color(0xFF6C63FF)),
+          colorScheme: ColorScheme.fromSeed(
+            seedColor: const Color(0xFF6C63FF),
+            brightness: Brightness.dark,
+          ),
           useMaterial3: true,
           fontFamily: 'Roboto',
+          // Set scaffolds to be transparent so background shows through
+          scaffoldBackgroundColor: Colors.transparent,
+          canvasColor: Colors.transparent,
+          // Dark text theme for readability on luxury background
+          textTheme: Theme.of(context).textTheme.apply(
+            bodyColor: Colors.white,
+            displayColor: Colors.white,
+          ),
         ),
         home: const LoginScreen(),
         debugShowCheckedModeBanner: false,
