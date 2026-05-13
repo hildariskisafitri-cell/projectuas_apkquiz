@@ -5,6 +5,7 @@ import '../widgets/luxury_background.dart';
 import '../widgets/option_card.dart';
 import '../widgets/progress_bar.dart';
 import '../widgets/timer_widget.dart';
+import '../services/audio_service.dart';
 import 'result_screen.dart';
 
 class QuizScreen extends StatefulWidget {
@@ -15,6 +16,8 @@ class QuizScreen extends StatefulWidget {
 }
 
 class _QuizScreenState extends State<QuizScreen> {
+  final AudioService _audioService = AudioService();
+
   @override
   void initState() {
     super.initState();
@@ -167,6 +170,12 @@ class _QuizScreenState extends State<QuizScreen> {
                                 showResult: false,
                                 onTap: () {
                                   quizViewModel.selectAnswer(index);
+                                  // Play sound based on answer correctness
+                                  if (isCorrect) {
+                                    _audioService.playCorrectSound();
+                                  } else {
+                                    _audioService.playIncorrectSound();
+                                  }
                                 },
                               );
                             },
@@ -189,6 +198,7 @@ class _QuizScreenState extends State<QuizScreen> {
                               quizViewModel.currentQuestionIndex == 0
                                   ? null
                                   : () {
+                                      _audioService.playClickSound();
                                       quizViewModel.previousQuestion();
                                     },
                           icon: const Icon(Icons.arrow_back),
@@ -209,17 +219,22 @@ class _QuizScreenState extends State<QuizScreen> {
                       Expanded(
                         child: ElevatedButton.icon(
                           onPressed: () {
+                            _audioService.playClickSound();
                             if (quizViewModel.isLastQuestion) {
                               // Submit quiz
-                              final score =
-                                  quizViewModel.finishQuiz();
-                              Navigator.of(context)
-                                  .pushReplacement(
-                                MaterialPageRoute(
-                                  builder: (_) =>
-                                      ResultScreen(score: score),
-                                ),
-                              );
+                              _audioService.playSuccessSound();
+                              Future.delayed(const Duration(milliseconds: 500), () {
+                                if (!mounted) return;
+                                final score =
+                                    quizViewModel.finishQuiz();
+                                Navigator.of(context)
+                                    .pushReplacement(
+                                  MaterialPageRoute(
+                                    builder: (_) =>
+                                        ResultScreen(score: score),
+                                  ),
+                                );
+                              });
                             } else {
                               // Go to next question
                               quizViewModel.nextQuestion();
