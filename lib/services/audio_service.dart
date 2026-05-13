@@ -17,13 +17,16 @@ class AudioService {
     try {
       await _audioPlayer.stop();
       // Using a free online correct sound
-      await _audioPlayer.play(
+      final future = _audioPlayer.play(
         UrlSource(
           'https://assets.mixkit.co/active_storage/sfx/2869/2869-preview.mp3',
         ),
       );
+      // Don't await - let it play in background without blocking
+      future.ignore();
     } catch (e) {
-      print('Error playing correct sound: $e');
+      // Silent fail - don't crash the app
+      print('Audio play skipped: $e');
     }
   }
 
@@ -32,13 +35,15 @@ class AudioService {
     try {
       await _audioPlayer.stop();
       // Using a free online incorrect sound
-      await _audioPlayer.play(
+      final future = _audioPlayer.play(
         UrlSource(
           'https://assets.mixkit.co/active_storage/sfx/2867/2867-preview.mp3',
         ),
       );
+      future.ignore();
     } catch (e) {
-      print('Error playing incorrect sound: $e');
+      // Silent fail
+      print('Audio play skipped: $e');
     }
   }
 
@@ -47,13 +52,15 @@ class AudioService {
     try {
       await _audioPlayer.stop();
       // Using a free online click sound
-      await _audioPlayer.play(
+      final future = _audioPlayer.play(
         UrlSource(
           'https://assets.mixkit.co/active_storage/sfx/2571/2571-preview.mp3',
         ),
       );
+      future.ignore();
     } catch (e) {
-      print('Error playing click sound: $e');
+      // Silent fail
+      print('Audio play skipped: $e');
     }
   }
 
@@ -62,13 +69,15 @@ class AudioService {
     try {
       await _audioPlayer.stop();
       // Using a free online success sound
-      await _audioPlayer.play(
+      final future = _audioPlayer.play(
         UrlSource(
           'https://assets.mixkit.co/active_storage/sfx/2959/2959-preview.mp3',
         ),
       );
+      future.ignore();
     } catch (e) {
-      print('Error playing success sound: $e');
+      // Silent fail
+      print('Audio play skipped: $e');
     }
   }
 
@@ -77,7 +86,8 @@ class AudioService {
     try {
       await _audioPlayer.stop();
     } catch (e) {
-      print('Error stopping audio: $e');
+      // Silent fail
+      print('Audio stop skipped: $e');
     }
   }
 
@@ -86,7 +96,8 @@ class AudioService {
     try {
       await _audioPlayer.dispose();
     } catch (e) {
-      print('Error disposing audio player: $e');
+      // Silent fail
+      print('Audio dispose skipped: $e');
     }
   }
 
@@ -95,7 +106,8 @@ class AudioService {
     try {
       await _audioPlayer.setVolume(volume);
     } catch (e) {
-      print('Error setting volume: $e');
+      // Silent fail
+      print('Audio setVolume skipped: $e');
     }
   }
 }

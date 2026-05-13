@@ -12,66 +12,36 @@ class LoginScreen extends StatefulWidget {
   State<LoginScreen> createState() => _LoginScreenState();
 }
 
-class _LoginScreenState extends State<LoginScreen>
-    with TickerProviderStateMixin {
-  late TextEditingController _nameController;
+class _LoginScreenState extends State<LoginScreen> {
   late TextEditingController _emailController;
-  late AnimationController _fadeController;
-  late AnimationController _scaleController;
-  late Animation<double> _fadeAnimation;
-  late Animation<double> _scaleAnimation;
+  late TextEditingController _passwordController;
   bool _isLoading = false;
+  bool _obscurePassword = true;
   final AudioService _audioService = AudioService();
 
   @override
   void initState() {
     super.initState();
-    _nameController = TextEditingController();
     _emailController = TextEditingController();
-
-    // Setup fade animation
-    _fadeController = AnimationController(
-      duration: const Duration(milliseconds: 800),
-      vsync: this,
-    );
-    _fadeAnimation = Tween<double>(begin: 0.0, end: 1.0).animate(
-      CurvedAnimation(parent: _fadeController, curve: Curves.easeIn),
-    );
-
-    // Setup scale animation
-    _scaleController = AnimationController(
-      duration: const Duration(milliseconds: 600),
-      vsync: this,
-    );
-    _scaleAnimation = Tween<double>(begin: 0.8, end: 1.0).animate(
-      CurvedAnimation(parent: _scaleController, curve: Curves.elasticOut),
-    );
-
-    // Start animations
-    _fadeController.forward();
-    Future.delayed(const Duration(milliseconds: 200), () {
-      if (mounted) {
-        _scaleController.forward();
-      }
-    });
+    _passwordController = TextEditingController();
   }
 
   @override
   void dispose() {
-    _nameController.dispose();
     _emailController.dispose();
-    _fadeController.dispose();
-    _scaleController.dispose();
+    _passwordController.dispose();
     super.dispose();
   }
 
   void _login() {
-    if (_nameController.text.isEmpty || _emailController.text.isEmpty) {
-      if (!mounted) return;
-      _audioService.playIncorrectSound();
+    final email = _emailController.text.trim();
+    final password = _passwordController.text.trim();
+
+    // Validasi input
+    if (email.isEmpty || password.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
-          content: Text('Harap isi semua field'),
+          content: Text('Email dan password tidak boleh kosong'),
           backgroundColor: Colors.red,
         ),
       );
@@ -84,13 +54,10 @@ class _LoginScreenState extends State<LoginScreen>
       _isLoading = true;
     });
 
-    // Save context before async operation
-    final userViewModel = context.read<UserViewModel>();
-    final nameText = _nameController.text;
-    final emailText = _emailController.text;
-
-    Future.delayed(const Duration(milliseconds: 500), () {
-      userViewModel.loginUser(nameText, emailText);
+    // Simulasi proses login
+    Future.delayed(const Duration(milliseconds: 800), () {
+      final userViewModel = context.read<UserViewModel>();
+      userViewModel.loginUser(email.split('@')[0], email);
 
       if (mounted) {
         Navigator.of(context).pushReplacement(
@@ -110,130 +77,160 @@ class _LoginScreenState extends State<LoginScreen>
       body: SafeArea(
         child: SingleChildScrollView(
           padding: const EdgeInsets.all(24),
-          child: FadeTransition(
-            opacity: _fadeAnimation,
-            child: ScaleTransition(
-              scale: _scaleAnimation,
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  const SizedBox(height: 40),
-                  const Text(
-                    'Quiz Master',
-                    style: TextStyle(
-                      fontSize: 32,
-                      fontWeight: FontWeight.bold,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              const SizedBox(height: 40),
+              // Logo/Title
+              Container(
+                padding: const EdgeInsets.all(20),
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  gradient: LinearGradient(
+                    colors: [
+                      const Color(0xFF6C63FF).withOpacity(0.2),
+                      const Color(0xFFD4A574).withOpacity(0.2),
+                    ],
+                    begin: Alignment.topLeft,
+                    end: Alignment.bottomRight,
+                  ),
+                ),
+                child: const Text(
+                  'QM',
+                  style: TextStyle(
+                    fontSize: 48,
+                    fontWeight: FontWeight.bold,
+                    color: Color(0xFFD4A574),
+                    letterSpacing: 2,
+                  ),
+                ),
+              ),
+              const SizedBox(height: 24),
+              const Text(
+                'Quiz Master',
+                style: TextStyle(
+                  fontSize: 28,
+                  fontWeight: FontWeight.bold,
+                  color: Color(0xFFD4A574),
+                  letterSpacing: 1,
+                ),
+              ),
+              const SizedBox(height: 8),
+              Text(
+                'Masuk ke akun Anda',
+                style: TextStyle(
+                  fontSize: 14,
+                  color: Colors.grey[300],
+                  letterSpacing: 0.5,
+                ),
+              ),
+              const SizedBox(height: 50),
+
+              // Email TextField
+              TextField(
+                controller: _emailController,
+                enabled: !_isLoading,
+                decoration: InputDecoration(
+                  hintText: 'Masukkan email Anda',
+                  hintStyle: TextStyle(color: Colors.grey[400]),
+                  prefixIcon: const Icon(Icons.email, color: Color(0xFFD4A574)),
+                  filled: true,
+                  fillColor: Colors.white.withOpacity(0.1),
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(12),
+                    borderSide: const BorderSide(color: Color(0xFFD4A574), width: 2),
+                  ),
+                  focusedBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(12),
+                    borderSide: const BorderSide(color: Color(0xFF6C63FF), width: 2),
+                  ),
+                  contentPadding: const EdgeInsets.symmetric(vertical: 16, horizontal: 16),
+                ),
+                style: const TextStyle(color: Colors.white),
+                keyboardType: TextInputType.emailAddress,
+              ),
+              const SizedBox(height: 16),
+
+              // Password TextField
+              TextField(
+                controller: _passwordController,
+                enabled: !_isLoading,
+                obscureText: _obscurePassword,
+                decoration: InputDecoration(
+                  hintText: 'Masukkan password Anda',
+                  hintStyle: TextStyle(color: Colors.grey[400]),
+                  prefixIcon: const Icon(Icons.lock, color: Color(0xFFD4A574)),
+                  suffixIcon: GestureDetector(
+                    onTap: () {
+                      setState(() {
+                        _obscurePassword = !_obscurePassword;
+                      });
+                    },
+                    child: Icon(
+                      _obscurePassword ? Icons.visibility_off : Icons.visibility,
                       color: Color(0xFFD4A574),
                     ),
                   ),
-                  const SizedBox(height: 8),
-                  Text(
-                    'Selamat datang kembali!',
-                    style: TextStyle(
-                      fontSize: 16,
-                      color: Colors.grey[300],
-                    ),
+                  filled: true,
+                  fillColor: Colors.white.withOpacity(0.1),
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(12),
+                    borderSide: const BorderSide(color: Color(0xFFD4A574), width: 2),
                   ),
-                  const SizedBox(height: 60),
-                  const Text(
-                    'Nama Anda',
-                    style: TextStyle(
-                      fontSize: 14,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.white,
-                    ),
+                  focusedBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(12),
+                    borderSide: const BorderSide(color: Color(0xFF6C63FF), width: 2),
                   ),
-                  const SizedBox(height: 8),
-                  TextField(
-                    controller: _nameController,
-                    decoration: InputDecoration(
-                      hintText: 'Masukkan nama Anda',
-                      hintStyle: TextStyle(color: Colors.grey[400]),
-                      filled: true,
-                      fillColor: Colors.white.withOpacity(0.1),
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(12),
-                        borderSide: BorderSide(
-                          color: const Color(0xFFD4A574).withOpacity(0.3),
-                        ),
-                      ),
-                      contentPadding: const EdgeInsets.symmetric(
-                        horizontal: 16,
-                        vertical: 12,
-                      ),
+                  contentPadding: const EdgeInsets.symmetric(vertical: 16, horizontal: 16),
+                ),
+                style: const TextStyle(color: Colors.white),
+              ),
+              const SizedBox(height: 32),
+
+              // Login Button
+              SizedBox(
+                width: double.infinity,
+                height: 56,
+                child: ElevatedButton(
+                  onPressed: _isLoading ? null : _login,
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: const Color(0xFF6C63FF),
+                    disabledBackgroundColor: Colors.grey[600],
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12),
                     ),
-                    style: const TextStyle(color: Colors.white),
+                    elevation: 5,
                   ),
-                  const SizedBox(height: 20),
-                  const Text(
-                    'Email',
-                    style: TextStyle(
-                      fontSize: 14,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.white,
-                    ),
-                  ),
-                  const SizedBox(height: 8),
-                  TextField(
-                    controller: _emailController,
-                    decoration: InputDecoration(
-                      hintText: 'Masukkan email Anda',
-                      hintStyle: TextStyle(color: Colors.grey[400]),
-                      filled: true,
-                      fillColor: Colors.white.withOpacity(0.1),
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(12),
-                        borderSide: BorderSide(
-                          color: const Color(0xFFD4A574).withOpacity(0.3),
-                        ),
-                      ),
-                      contentPadding: const EdgeInsets.symmetric(
-                        horizontal: 16,
-                        vertical: 12,
-                      ),
-                    ),
-                    keyboardType: TextInputType.emailAddress,
-                    style: const TextStyle(color: Colors.white),
-                  ),
-                  const SizedBox(height: 40),
-                  SizedBox(
-                    width: double.infinity,
-                    height: 56,
-                    child: ElevatedButton(
-                      onPressed: _isLoading ? null : _login,
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: const Color(0xFF6C63FF),
-                        disabledBackgroundColor: Colors.grey[600],
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(12),
-                        ),
-                        elevation: 5,
-                      ),
-                      child: _isLoading
-                          ? const SizedBox(
-                              height: 24,
-                              width: 24,
-                              child: CircularProgressIndicator(
-                                valueColor: AlwaysStoppedAnimation<Color>(
-                                  Colors.white,
-                                ),
-                                strokeWidth: 2,
-                              ),
-                            )
-                          : const Text(
-                              'Login',
-                              style: TextStyle(
-                                color: Colors.white,
-                                fontSize: 18,
-                                fontWeight: FontWeight.bold,
-                              ),
+                  child: _isLoading
+                      ? const SizedBox(
+                          height: 24,
+                          width: 24,
+                          child: CircularProgressIndicator(
+                            valueColor: AlwaysStoppedAnimation<Color>(
+                              Colors.white,
                             ),
-                    ),
-                  ),
-                  const SizedBox(height: 20),
-                  Center(
-                    child: GestureDetector(
-                      onTap: () {
+                            strokeWidth: 2,
+                          ),
+                        )
+                      : const Text(
+                          'Masuk',
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 16,
+                            fontWeight: FontWeight.bold,
+                            letterSpacing: 0.5,
+                          ),
+                        ),
+                ),
+              ),
+              const SizedBox(height: 24),
+
+              // Skip Login Option
+              GestureDetector(
+                onTap: _isLoading
+                    ? null
+                    : () {
                         _audioService.playClickSound();
                         Navigator.of(context).pushReplacement(
                           MaterialPageRoute(
@@ -241,19 +238,19 @@ class _LoginScreenState extends State<LoginScreen>
                           ),
                         );
                       },
-                      child: Text(
-                        'Lanjutkan tanpa login',
-                        style: TextStyle(
-                          fontSize: 14,
-                          color: Colors.grey[300],
-                          decoration: TextDecoration.underline,
-                        ),
-                      ),
-                    ),
+                child: Text(
+                  'Lanjutkan tanpa login',
+                  style: TextStyle(
+                    fontSize: 13,
+                    color: Colors.grey[300],
+                    decoration: TextDecoration.underline,
+                    decorationColor: Colors.grey[300],
+                    letterSpacing: 0.3,
                   ),
-                ],
+                ),
               ),
-            ),
+              const SizedBox(height: 60),
+            ],
           ),
         ),
       ),

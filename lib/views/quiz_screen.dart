@@ -92,7 +92,7 @@ class _QuizScreenState extends State<QuizScreen> {
                       // Timer widget
                       TimerWidget(
                         remainingSeconds: quizViewModel.remainingSeconds,
-                        totalSeconds: quizViewModel.remainingSeconds + 60, // Contoh total
+                        totalSeconds: quizViewModel.questions.fold<int>(0, (sum, q) => sum + q.timeLimit),
                         textColor: Colors.white,
                       ),
                       // Question counter

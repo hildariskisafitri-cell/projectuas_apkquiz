@@ -6,6 +6,7 @@ import '../viewmodels/quiz_viewmodel.dart';
 import '../viewmodels/user_viewmodel.dart';
 import '../widgets/luxury_background.dart';
 import 'quiz_screen.dart';
+import 'login_screen.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -272,8 +273,10 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                                     onPressed: () {
                                       userViewModel.logout();
                                       Navigator.of(context).pop();
-                                      Navigator.of(context).pushNamedAndRemoveUntil(
-                                        '/',
+                                        Navigator.of(context).pushAndRemoveUntil(
+                                          MaterialPageRoute(
+                                            builder: (_) => const LoginScreen(),
+                                          ),
                                         (route) => false,
                                       );
                                     },

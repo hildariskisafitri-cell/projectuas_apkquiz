@@ -15,13 +15,14 @@ class TimerWidget extends StatelessWidget {
   });
 
   Color _getTimerColor() {
+    if (totalSeconds == 0) return Colors.white;
     double percentage = remainingSeconds / totalSeconds;
     if (percentage <= 0.2) {
       return warningColor ?? Colors.red;
     } else if (percentage <= 0.5) {
       return warningColor ?? Colors.orange;
     }
-    return Colors.red;
+    return textColor;
   }
 
   String _formatTime(int seconds) {
