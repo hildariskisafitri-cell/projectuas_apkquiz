@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../services/quiz_service.dart';
+import '../services/audio_service.dart';
 import '../viewmodels/quiz_viewmodel.dart';
 import '../viewmodels/user_viewmodel.dart';
 import '../widgets/luxury_background.dart';
@@ -13,10 +14,15 @@ class HomeScreen extends StatefulWidget {
   State<HomeScreen> createState() => _HomeScreenState();
 }
 
-class _HomeScreenState extends State<HomeScreen> {
+class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
   final QuizService _quizService = QuizService();
+  final AudioService _audioService = AudioService();
   String _selectedCategory = 'Umum';
   bool _isLoading = false;
+  late AnimationController _headerAnimController;
+  late AnimationController _categoryAnimController;
+  late Animation<double> _headerFadeAnimation;
+  late Animation<double> _categoryFadeAnimation;
 
   final List<String> categories = [
     'Umum',
@@ -26,7 +32,46 @@ class _HomeScreenState extends State<HomeScreen> {
     'Sejarah',
   ];
 
+  @override
+  void initState() {
+    super.initState();
+    // Setup header animation
+    _headerAnimController = AnimationController(
+      duration: const Duration(milliseconds: 600),
+      vsync: this,
+    );
+    _headerFadeAnimation = Tween<double>(begin: 0.0, end: 1.0).animate(
+      CurvedAnimation(parent: _headerAnimController, curve: Curves.easeIn),
+    );
+
+    // Setup category animation
+    _categoryAnimController = AnimationController(
+      duration: const Duration(milliseconds: 600),
+      vsync: this,
+    );
+    _categoryFadeAnimation = Tween<double>(begin: 0.0, end: 1.0).animate(
+      CurvedAnimation(parent: _categoryAnimController, curve: Curves.easeIn),
+    );
+
+    // Start animations with stagger
+    _headerAnimController.forward();
+    Future.delayed(const Duration(milliseconds: 300), () {
+      if (mounted) {
+        _categoryAnimController.forward();
+      }
+    });
+  }
+
+  @override
+  void dispose() {
+    _headerAnimController.dispose();
+    _categoryAnimController.dispose();
+    super.dispose();
+  }
+
   void _startQuiz() async {
+    _audioService.playClickSound();
+    
     setState(() {
       _isLoading = true;
     });
@@ -47,6 +92,7 @@ class _HomeScreenState extends State<HomeScreen> {
         ),
       );
     } catch (e) {
+      _audioService.playIncorrectSound();
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: Text('Error loading quiz: $e'),
@@ -73,132 +119,94 @@ class _HomeScreenState extends State<HomeScreen> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              // Header
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  const SizedBox(height: 20),
-                  const Text(
-                    'Quiz Master',
-                    style: TextStyle(
-                      fontSize: 32,
-                      fontWeight: FontWeight.bold,
-                      color: Color(0xFFD4A574),
-                    ),
-                  ),
-                  const SizedBox(height: 8),
-                  Text(
-                    'Test pengetahuan Anda dengan kuis interaktif',
-                    style: TextStyle(
-                      fontSize: 16,
-                      color: Colors.grey[300],
-                    ),
-                  ),
-                ],
-              ),
-              const SizedBox(height: 40),
-
-              // User info (jika sudah login)
-              Consumer<UserViewModel>(
-                builder: (context, userViewModel, _) {
-                  if (userViewModel.isLoggedIn) {
-                    return Container(
-                      padding: const EdgeInsets.all(16),
-                      decoration: BoxDecoration(
-                        color: const Color(0xFFD4A574).withOpacity(0.15),
-                        borderRadius: BorderRadius.circular(12),
-                        border: Border.all(
-                          color: const Color(0xFFD4A574),
-                          width: 2,
-                        ),
+              // Header dengan animasi
+              FadeTransition(
+                opacity: _headerFadeAnimation,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const SizedBox(height: 20),
+                    const Text(
+                      'Quiz Master',
+                      style: TextStyle(
+                        fontSize: 32,
+                        fontWeight: FontWeight.bold,
+                        color: Color(0xFFD4A574),
                       ),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            'Selamat datang, ${userViewModel.currentUser?.name}!',
-                            style: const TextStyle(
-                              fontSize: 16,
-                              fontWeight: FontWeight.bold,
-                              color: Color(0xFFD4A574),
-                            ),
-                          ),
-                          const SizedBox(height: 8),
-                          Text(
-                            'Kuis diselesaikan: ${userViewModel.getTotalQuizzesCompleted()}',
-                            style: TextStyle(
-                              fontSize: 14,
-                              color: Colors.grey[300],
-                            ),
-                          ),
-                          if (userViewModel.getTotalQuizzesCompleted() > 0)
-                            Text(
-                              'Rata-rata skor: ${userViewModel.getAverageScore().toStringAsFixed(1)}%',
-                              style: TextStyle(
-                                fontSize: 14,
-                                color: Colors.grey[300],
-                              ),
-                            ),
-                        ],
+                    ),
+                    const SizedBox(height: 8),
+                    Text(
+                      'Test pengetahuan Anda dengan kuis interaktif',
+                      style: TextStyle(
+                        fontSize: 16,
+                        color: Colors.grey[300],
                       ),
-                    );
-                  }
-                  return const SizedBox.shrink();
-                },
-              ),
-              const SizedBox(height: 40),
-
-              // Category selection
-              const Text(
-                'Pilih Kategori',
-                style: TextStyle(
-                  fontSize: 18,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.white,
+                    ),
+                  ],
                 ),
               ),
-              const SizedBox(height: 16),
-              Wrap(
-                spacing: 12,
-                runSpacing: 12,
-                children: categories.map((category) {
-                  bool isSelected = _selectedCategory == category;
-                  return GestureDetector(
-                    onTap: () {
-                      setState(() {
-                        _selectedCategory = category;
-                      });
-                    },
-                    child: Container(
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 20,
-                        vertical: 12,
-                      ),
-                      decoration: BoxDecoration(
-                        color: isSelected
-                            ? const Color(0xFF6C63FF)
-                            : Colors.white.withOpacity(0.1),
-                        borderRadius: BorderRadius.circular(20),
-                        border: Border.all(
-                          color: isSelected
-                              ? const Color(0xFF6C63FF)
-                              : const Color(0xFFD4A574).withOpacity(0.3),
-                          width: 2,
-                        ),
-                      ),
-                      child: Text(
-                        category,
-                        style: TextStyle(
-                          color: isSelected
-                              ? Colors.white
-                              : Colors.grey[200],
-                          fontWeight: FontWeight.w500,
-                          fontSize: 14,
-                        ),
+              const SizedBox(height: 40),
+
+              // Category selection dengan animasi
+              FadeTransition(
+                opacity: _categoryFadeAnimation,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const Text(
+                      'Pilih Kategori',
+                      style: TextStyle(
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.white,
                       ),
                     ),
-                  );
-                }).toList(),
+                    const SizedBox(height: 16),
+                    Wrap(
+                      spacing: 12,
+                      runSpacing: 12,
+                      children: categories.map((category) {
+                        bool isSelected = _selectedCategory == category;
+                        return GestureDetector(
+                          onTap: () {
+                            _audioService.playClickSound();
+                            setState(() {
+                              _selectedCategory = category;
+                            });
+                          },
+                          child: Container(
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 20,
+                              vertical: 12,
+                            ),
+                            decoration: BoxDecoration(
+                              color: isSelected
+                                  ? const Color(0xFF6C63FF)
+                                  : Colors.white.withValues(alpha: 0.1),
+                              borderRadius: BorderRadius.circular(20),
+                              border: Border.all(
+                                color: isSelected
+                                    ? const Color(0xFF6C63FF)
+                                    : const Color(0xFFD4A574).withValues(alpha: 0.3),
+                                width: 2,
+                              ),
+                            ),
+                            child: Text(
+                              category,
+                              style: TextStyle(
+                                color: isSelected
+                                    ? Colors.white
+                                    : Colors.grey[200],
+                                fontWeight: FontWeight.w500,
+                                fontSize: 14,
+                              ),
+                            ),
+                          ),
+                        );
+                      }).toList(),
+                    ),
+                  ],
+                ),
               ),
               const SizedBox(height: 50),
 
@@ -248,21 +256,38 @@ class _HomeScreenState extends State<HomeScreen> {
                       height: 48,
                       child: OutlinedButton(
                         onPressed: () {
-                          userViewModel.logout();
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            const SnackBar(
-                              content: Text('Berhasil logout'),
-                              duration: Duration(seconds: 1),
-                            ),
+                          _audioService.playClickSound();
+                          showDialog(
+                            context: context,
+                            builder: (BuildContext context) {
+                              return AlertDialog(
+                                title: const Text('Logout'),
+                                content: const Text('Apakah Anda yakin ingin logout?'),
+                                actions: [
+                                  TextButton(
+                                    onPressed: () => Navigator.of(context).pop(),
+                                    child: const Text('Tidak'),
+                                  ),
+                                  TextButton(
+                                    onPressed: () {
+                                      userViewModel.logout();
+                                      Navigator.of(context).pop();
+                                      Navigator.of(context).pushNamedAndRemoveUntil(
+                                        '/',
+                                        (route) => false,
+                                      );
+                                    },
+                                    child: const Text('Ya'),
+                                  ),
+                                ],
+                              );
+                            },
                           );
                         },
                         style: OutlinedButton.styleFrom(
                           side: const BorderSide(
                             color: Color(0xFF6C63FF),
                             width: 2,
-                          ),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(12),
                           ),
                         ),
                         child: const Text(
@@ -279,6 +304,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   return const SizedBox.shrink();
                 },
               ),
+              const SizedBox(height: 20),
             ],
           ),
         ),
@@ -286,3 +312,4 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 }
+
