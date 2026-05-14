@@ -56,10 +56,9 @@ class _LoginScreenState extends State<LoginScreen> {
 
     // Simulasi proses login
     Future.delayed(const Duration(milliseconds: 800), () {
-      final userViewModel = context.read<UserViewModel>();
-      userViewModel.loginUser(email.split('@')[0], email);
-
       if (mounted) {
+        final userViewModel = context.read<UserViewModel>();
+        userViewModel.loginUser(email.split('@')[0], email);
         Navigator.of(context).pushReplacement(
           MaterialPageRoute(
             builder: (_) => const HomeScreen(),
@@ -89,8 +88,8 @@ class _LoginScreenState extends State<LoginScreen> {
                   shape: BoxShape.circle,
                   gradient: LinearGradient(
                     colors: [
-                      const Color(0xFF6C63FF).withOpacity(0.2),
-                      const Color(0xFFD4A574).withOpacity(0.2),
+                      const Color(0xFF6C63FF).withValues(alpha: 0.2),
+                      const Color(0xFFD4A574).withValues(alpha: 0.2),
                     ],
                     begin: Alignment.topLeft,
                     end: Alignment.bottomRight,
@@ -136,7 +135,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   hintStyle: TextStyle(color: Colors.grey[400]),
                   prefixIcon: const Icon(Icons.email, color: Color(0xFFD4A574)),
                   filled: true,
-                  fillColor: Colors.white.withOpacity(0.1),
+                  fillColor: Colors.white.withValues(alpha: 0.1),
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(12),
                     borderSide: const BorderSide(color: Color(0xFFD4A574), width: 2),
@@ -173,7 +172,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     ),
                   ),
                   filled: true,
-                  fillColor: Colors.white.withOpacity(0.1),
+                  fillColor: Colors.white.withValues(alpha: 0.1),
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(12),
                     borderSide: const BorderSide(color: Color(0xFFD4A574), width: 2),
