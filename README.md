@@ -1,3 +1,5 @@
+ThinkUP
+
 1. Arsitektur & Struktur Proyek
 Untuk skala akademis, disarankan menggunakan pola Clean Architecture atau MVVM (Model-View-ViewModel). Ini memisahkan logika bisnis dari tampilan (UI).
 Struktur Folder:
